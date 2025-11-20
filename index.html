@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Vision – Learn to Interpret the Visual World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(148, 163, 184, 0.3);
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 40%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.6), transparent);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #e0f2fe, #38bdf8 40%, #0ea5e9 70%, #0f172a 100%);
+      box-shadow: 0 0 22px rgba(56, 189, 248, 0.75);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 18% 18% auto auto;
+      border-radius: 999px;
+      border: 2px solid rgba(15, 23, 42, 0.35);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 0.2rem;
+      color: var(--muted);
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8, #a855f7);
+      transition: width 0.22s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.95rem;
+        border-radius: 999px;
+        border: 1px solid rgba(56, 189, 248, 0.7);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.28), rgba(15, 23, 42, 0.95));
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+      }
+
+      .nav-cta span.icon {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+      }
+    }
+
+    main {
+      padding-bottom: 4rem;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 4.5rem 0 2.5rem;
+      display: grid;
+      gap: 3rem;
+    }
+
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        align-items: center;
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.15rem, 3.3vw + 1.4rem, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero h1 span.gradient {
+      background: linear-gradient(120deg, #38bdf8, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.98rem;
+      color: var(--muted);
+      max-width: 34rem;
+      margin-bottom: 1.45rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-bottom: 1.75rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-meta span {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.9rem;
+    }
+
+    .btn-primary, .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.3rem;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, border-color 0.14s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(120deg, #38bdf8, #4f46e5);
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 14px 35px rgba(37, 99, 235, 0.55);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.7);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(148, 163, 184, 0.7);
+      color: var(--muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(248, 250, 252, 0.9);
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .hero-footnote {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      max-width: 420px;
+      margin-inline: auto;
+    }
+
+    .glass-card {
+      border-radius: var(--radius-xl);
+      padding: 1.3rem 1.35rem 1.1rem;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.25), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.9rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.7rem;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 9px rgba(34, 197, 94, 0.8);
+    }
+
+    .cv-image {
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 0.75rem;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 1), rgba(15, 23, 42, 0.9));
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cv-image-main {
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      position: relative;
+    }
+
+    .cv-image-main::before,
+    .cv-image-main::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+    }
+
+    .cv-image-main::before {
+      inset: 18% 14% 40% 14%;
+    }
+
+    .cv-image-main::after {
+      inset: 54% 26% 14% 26%;
+    }
+
+    .cv-tag {
+      position: absolute;
+      inset: 18% 22% auto auto;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .cv-tag .box {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #38bdf8;
+    }
+
+    .cv-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .cv-label-row span {
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .glass-footer {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+      font-size: 0.7rem;
+    }
+
+    .stat-card {
+      border-radius: 12px;
+      padding: 0.55rem 0.6rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .stat-chip {
+      margin-top: 0.2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.6);
+    }
+
+    .hero-orbit {
+      position: absolute;
+      inset: -18%;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.3);
+      z-index: -1;
+    }
+
+    .hero-orbit-dot {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #a855f7;
+      top: 8%;
+      right: 18%;
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.9);
+    }
+
+    /* Sections */
+    section {
+      padding: 2.5rem 0 1.5rem;
+    }
+
+    .section-intro {
+      max-width: 640px;
+      margin-bottom: 1.9rem;
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-description {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Applications grid */
+    .grid {
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    @media (min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.92));
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(circle at 10% 0, rgba(56, 189, 248, 0.16), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-soft);
+      border: 1px solid rgba(56, 189, 248, 0.85);
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .card-text {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .card-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    /* How it works */
+    .timeline {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.98));
+      padding: 1.1rem 1.2rem;
+    }
+
+    .timeline-step {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.8rem;
+      padding: 0.7rem 0;
+    }
+
+    .timeline-step + .timeline-step {
+      border-top: 1px dashed rgba(75, 85, 99, 0.8);
+    }
+
+    .step-index {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+    }
+
+    .step-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .step-text {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .step-meta {
+      font-size: 0.7rem;
+      margin-top: 0.1rem;
+      color: #93c5fd;
+    }
+
+    /* Key tasks */
+    @media (min-width: 900px) {
+      .two-column {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: flex-start;
+      }
+    }
+
+    .task-list {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.82rem;
+      padding: 0.45rem 0.55rem;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .task-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+
+    .task-item strong {
+      font-weight: 500;
+    }
+
+    /* Code section */
+    .code-card {
+      border-radius: var(--radius-xl);
+      padding: 1rem 1rem 0.9rem;
+      background: #020617;
+      border: 1px solid rgba(30, 64, 175, 0.95);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.98);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .code-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(55, 65, 81, 0.8);
+    }
+
+    .code-dots span:nth-child(1) {
+      background: #f97316;
+    }
+
+    .code-dots span:nth-child(2) {
+      background: #eab308;
+    }
+
+    .code-dots span:nth-child(3) {
+      background: #22c55e;
+    }
+
+    pre {
+      max-height: 260px;
+      overflow: auto;
+      padding: 0.75rem 0.4rem 0.9rem 0.4rem;
+      margin: 0;
+      font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #e5e7eb;
+    }
+
+    code {
+      white-space: pre;
+    }
+
+    .code-hint {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Learning path */
+    .path-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .path-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .path-step {
+      border-radius: var(--radius-lg);
+      padding: 0.9rem;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+      font-size: 0.85rem;
+    }
+
+    .path-step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+
+    .path-step-index {
+      font-size: 0.82rem;
+      color: #93c5fd;
+      font-weight: 500;
+    }
+
+    .path-tag {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    .path-list {
+      margin-top: 0.25rem;
+      padding-left: 1rem;
+    }
+
+    .path-list li {
+      margin-bottom: 0.15rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 1.4rem 0 2.2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    /* Small screen tweaks */
+    @media (max-width: 600px) {
+      .glass-footer {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero {
+        padding-top: 3.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a href="#top" class="logo">
+        <div class="logo-mark"></div>
+        <span>CV Lab</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#applications">Applications</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#tasks">Key tasks</a>
+        <a href="#code">Code</a>
+        <a href="#path">Learning path</a>
+      </nav>
+      <a href="#path" class="nav-cta">
+        <span class="icon">▶</span>
+        <span>Start learning</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            Student · Coding · Research
+          </div>
+          <h1>
+            Learn <span class="gradient">Computer Vision</span><br />
+            and teach machines to see.
+          </h1>
+          <p class="hero-subtitle">
+            Computer vision is a field of Artificial Intelligence that allows computers to interpret and understand the visual world using images and videos. This page gives you an intuitive overview, key concepts, and starter code.
+          </p>
+          <div class="hero-meta">
+            <span>Focus: interpret the visual world</span>
+            <span>Purpose: coding projects & research</span>
+          </div>
+          <div class="cta-row">
+            <a href="#code" class="btn-primary">Try a Python example</a>
+            <a href="#applications" class="btn-ghost">Explore what CV can do</a>
+          </div>
+          <p class="hero-footnote">
+            Tip: scroll section by section, and try to implement at least one idea from each part.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="glass-card">
+          <div class="glass-header">
+            <span>Real-time camera</span>
+            <span class="pill">
+              <span class="pill-dot"></span>
+              Model: YOLO · FPS: 32
+            </span>
+          </div>
+          <div class="cv-image">
+            <div class="cv-image-main">
+              Live frame
+              <div class="cv-tag">
+                <span class="box"></span>
+                person · 0.94
+              </div>
+            </div>
+            <div class="cv-label-row">
+              <span>Bounding boxes: 6</span>
+              <span>Classes: person, car, dog</span>
+            </div>
+          </div>
+          <div class="glass-footer">
+            <div class="stat-card">
+              <div class="stat-label">Task</div>
+              <div class="stat-value">Detection</div>
+              <div class="stat-chip">Object-level</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Input</div>
+              <div class="stat-value">Video</div>
+              <div class="stat-chip">RGB frames</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Output</div>
+              <div class="stat-value">Labels</div>
+              <div class="stat-chip">+ coordinates</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-orbit"></div>
+        <div class="hero-orbit-dot"></div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="container">
+        <div class="section-intro">
+          <div class="section-kicker">Why it matters</div>
+          <h2 class="section-title">Where is computer vision used?</h2>
+          <p class="section-description">
+            Computer vision is everywhere around you. Here are some real-world applications you can relate to and later try to reproduce with code.
+          </p>
+        </div>
+        <div class="grid grid-3">
+          <article class="card">
+            <div class="card-icon">📱</div>
+            <h3 class="card-title">Face unlock & filters</h3>
+            <p class="card-text">
+              Your phone detects your face, estimates its position, and matches it against stored features. Social media apps track facial landmarks to place filters.
+            </p>
+            <div class="card-tag-row">
+              <span class="card-tag">Face detection</span>
+              <span class="card-tag">Landmarks</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🚗</div>
+            <h3 class="card-title">Self-driving assistance</h3>
+            <p class="card-text">
+              Cars detect lanes, traffic signs, other vehicles, and pedestrians from multiple cameras, making real-time decisions to keep you safe.
+            </p>
+            <div class="card-tag-row">
+              <span class="card-tag">Object detection</span>
+              <span class="card-tag">Segmentation</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">🏥</div>
+            <h3 class="card-title">Medical imaging</h3>
+            <p class="card-text">
+              Models analyze X-rays, MRIs, and CT scans to highlight suspicious regions and assist doctors in diagnosing diseases.
+            </p>
+            <div class="card-tag-row">
+              <span class="card-tag">Image classification</span>
+              <span class="card-tag">Anomaly detection</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="container">
+        <div class="section-intro">
+          <div class="section-kicker">Under the hood</div>
+          <h2 class="section-title">How does computer vision work?</h2>
+          <p class="section-description">
+            At a high level, computer vision systems convert images into numbers, extract patterns, and map those patterns to useful outputs such as labels, boxes, or masks.
+          </p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="step-index">01</div>
+            <div>
+              <h3 class="step-title">Capture & preprocess the image</h3>
+              <p class="step-text">
+                Read image pixels (RGB values), resize to a fixed size, normalize intensity, and sometimes convert to grayscale. This makes the data consistent for the model.
+              </p>
+              <p class="step-meta">Code: <code>OpenCV</code> or <code>Pillow</code> in Python</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-index">02</div>
+            <div>
+              <h3 class="step-title">Extract features</h3>
+              <p class="step-text">
+                Classical CV uses filters (edges, corners, texture) and descriptors (SIFT, HOG). Modern deep learning lets convolutional neural networks learn features automatically.
+              </p>
+              <p class="step-meta">Modern approach: Convolutional Neural Networks (CNNs)</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-index">03</div>
+            <div>
+              <h3 class="step-title">Predict & post-process</h3>
+              <p class="step-text">
+                The model predicts outputs (class labels, object boxes, masks). Then we filter predictions (like non-max suppression) and visualize the result on top of the original image.
+              </p>
+              <p class="step-meta">Output: labels, boxes, keypoints, masks, depth, etc.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tasks">
+      <div class="container two-column">
+        <div>
+          <div class="section-intro">
+            <div class="section-kicker">Core building blocks</div>
+            <h2 class="section-title">Key computer vision tasks</h2>
+            <p class="section-description">
+              Most projects you build will be a combination of a few standard tasks. Start by understanding these building blocks.
+            </p>
+          </div>
+          <div class="task-list">
+            <div class="task-item">
+              <div class="task-badge">1</div>
+              <div>
+                <strong>Image classification</strong> – given an image, predict a single label (e.g., "cat" vs "dog"). Good for simple recognition tasks.
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-badge">2</div>
+              <div>
+                <strong>Object detection</strong> – find and classify multiple objects with bounding boxes (e.g., people and cars in a street scene).
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-badge">3</div>
+              <div>
+                <strong>Segmentation</strong> – label each pixel to know which object it belongs to. Useful for medical images and autonomous driving.
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-badge">4</div>
+              <div>
+                <strong>Keypoint detection</strong> – locate specific points like facial landmarks or human joints for pose estimation.
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="task-badge">5</div>
+              <div>
+                <strong>Tracking</strong> – follow objects across frames in a video, giving them consistent IDs over time.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="code-card">
+            <div class="code-header">
+              <div class="code-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span>Concept: from pixels to predictions</span>
+            </div>
+            <pre><code># An image is just a grid of numbers
+# Example using PyTorch
+
+import torch
+
+# Fake batch of 8 RGB images, 3x224x224 pixels each
+images = torch.randn(8, 3, 224, 224)
+
+# A tiny "model": flatten and apply a linear layer
+model = torch.nn.Sequential(
+    torch.nn.Flatten(),             # [8, 3*224*224]
+    torch.nn.Linear(3*224*224, 10)  # 10 classes
+)
+
+logits = model(images)  # shape: [8, 10]
+probs = torch.softmax(logits, dim=1)
+
+print("Predicted class for first image:", probs[0].argmax().item())</code></pre>
+            <p class="code-hint">
+              Real models use convolutional layers and train on thousands of images, but the idea is the same: images → numbers → learn patterns → predictions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="code">
+      <div class="container">
+        <div class="section-intro">
+          <div class="section-kicker">Hands-on</div>
+          <h2 class="section-title">Starter code: load and display an image</h2>
+          <p class="section-description">
+            Here is a minimal Python example using <code>OpenCV</code> to load, convert, and display an image. Try to run and modify it on your own machine.
+          </p>
+        </div>
+        <div class="code-card">
+          <div class="code-header">
+            <div class="code-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span>Python · OpenCV</span>
+          </div>
+          <pre><code>import cv2
+
+# 1. Load an image from file
+img = cv2.imread("image.jpg")  # put your image path here
+
+if img is None:
+    raise FileNotFoundError("Could not load image. Check the path.")
+
+# 2. Show original image
+cv2.imshow("Original", img)
+
+# 3. Convert to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+cv2.imshow("Grayscale", gray)
+
+# 4. Detect edges (Canny)
+edges = cv2.Canny(gray, 100, 200)
+cv2.imshow("Edges", edges)
+
+# 5. Wait for a key press and close windows
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+          <p class="code-hint">
+            Install OpenCV with <code>pip install opencv-python</code>. Then replace <code>image.jpg</code> with any picture you like and experiment with the edge thresholds.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="path">
+      <div class="container">
+        <div class="section-intro">
+          <div class="section-kicker">Roadmap for you</div>
+          <h2 class="section-title">Suggested learning path</h2>
+          <p class="section-description">
+            Since you are a student focusing on coding and research, follow this rough sequence. At each stage, build at least one small project.
+          </p>
+        </div>
+        <div class="path-grid">
+          <div class="path-step">
+            <div class="path-step-header">
+              <span class="path-step-index">Step 1 · Foundations</span>
+              <span class="path-tag">2–3 weeks</span>
+            </div>
+            <ul class="path-list">
+              <li>Python basics (functions, loops, NumPy arrays).</li>
+              <li>Image as arrays (height × width × channels).</li>
+              <li>Use OpenCV/Pillow to crop, resize, rotate images.</li>
+            </ul>
+          </div>
+          <div class="path-step">
+            <div class="path-step-header">
+              <span class="path-step-index">Step 2 · Classical CV</span>
+              <span class="path-tag">3–4 weeks</span>
+            </div>
+            <ul class="path-list">
+              <li>Filters: blur, sharpen, edge detection.</li>
+              <li>Keypoints: corners, feature matching.</li>
+              <li>Mini-project: document scanner or basic face detection.</li>
+            </ul>
+          </div>
+          <div class="path-step">
+            <div class="path-step-header">
+              <span class="path-step-index">Step 3 · Deep learning & research</span>
+              <span class="path-tag">ongoing</span>
+            </div>
+            <ul class="path-list">
+              <li>Learn PyTorch or TensorFlow/Keras.</li>
+              <li>Train a small CNN on a dataset (e.g., CIFAR-10).</li>
+              <li>Explore state-of-the-art models (ResNet, YOLO, ViT).</li>
+              <li>Try reproducing a simple research paper result.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <p>Built as a mini-guide to computer vision for students who want to code and do research.</p>
+      <div class="footer-links">
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+  
+	<script>
+	(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="AcJnJ8ApnzuQtuQq8SPFD";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+	</script>
+
+</body>
+</html>
