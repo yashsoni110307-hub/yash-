@@ -257,6 +257,7 @@
       background: linear-gradient(120deg, #38bdf8, #4f46e5);
       border-color: rgba(56, 189, 248, 0.9);
       box-shadow: 0 14px 35px rgba(37, 99, 235, 0.55);
+      color: #f9fafb;
     }
 
     .btn-primary:hover {
@@ -760,6 +761,71 @@
       margin-bottom: 0.15rem;
     }
 
+    /* Email form section */
+    .email-section {
+      padding: 2.5rem 0 3rem;
+    }
+
+    .email-card {
+      border-radius: var(--radius-xl);
+      padding: 1.3rem 1.4rem;
+      background: linear-gradient(150deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: var(--shadow-soft);
+      max-width: 560px;
+    }
+
+    .email-card h2 {
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .email-card p {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+
+    .email-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .email-form input[type="email"] {
+      flex: 1 1 220px;
+      padding: 0.6rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .email-form input[type="email"]::placeholder {
+      color: var(--muted);
+    }
+
+    .email-form input[type="email"]:focus {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     /* Footer */
     footer {
       border-top: 1px solid rgba(55, 65, 81, 0.9);
@@ -1157,6 +1223,31 @@ cv2.destroyAllWindows()</code></pre>
         </div>
       </div>
     </section>
+
+    <!-- Email capture form -->
+    <section class="email-section">
+      <div class="container">
+        <div class="email-card">
+          <h2>Get computer vision updates</h2>
+          <p>Drop your email and we&rsquo;ll send you occasional resources, project ideas, and learning tips.</p>
+          <form
+            class="email-form"
+            action="https://yashlangaliya.app.n8n.cloud/webhook/8323c564-d1fd-4fb7-83fd-34f76e30a560"
+            method="POST"
+          >
+            <label for="email" class="sr-only">Email address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@example.com"
+              required
+            />
+            <button type="submit" class="btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1167,10 +1258,38 @@ cv2.destroyAllWindows()</code></pre>
       </div>
     </div>
   </footer>
-  
-	<script>
-	(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="AcJnJ8ApnzuQtuQq8SPFD";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
-	</script>
 
+  <script>
+    (function () {
+      if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+        window.chatbase = (...arguments) => {
+          if (!window.chatbase.q) {
+            window.chatbase.q = [];
+          }
+          window.chatbase.q.push(arguments);
+        };
+        window.chatbase = new Proxy(window.chatbase, {
+          get(target, prop) {
+            if (prop === "q") {
+              return target.q;
+            }
+            return (...args) => target(prop, ...args);
+          },
+        });
+      }
+      const onLoad = function () {
+        const script = document.createElement("script");
+        script.src = "https://www.chatbase.co/embed.min.js";
+        script.id = "AcJnJ8ApnzuQtuQq8SPFD";
+        script.domain = "www.chatbase.co";
+        document.body.appendChild(script);
+      };
+      if (document.readyState === "complete") {
+        onLoad();
+      } else {
+        window.addEventListener("load", onLoad);
+      }
+    })();
+  </script>
 </body>
 </html>
